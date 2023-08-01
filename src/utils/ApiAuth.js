@@ -7,16 +7,6 @@ function handleReply(res) {
   return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-export function routCheck(rout) {
-  return fetch(`${BASE_URL}/users/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${rout}`,
-    },
-  }).then(handleReply);
-}
-
 export function signin(data) {
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
@@ -34,5 +24,15 @@ export function signup(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+  }).then(handleReply);
+}
+
+export function routCheck(token) {
+  return fetch(`${BASE_URL}/users/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   }).then(handleReply);
 }

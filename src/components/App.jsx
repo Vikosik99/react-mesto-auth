@@ -123,6 +123,28 @@ export default function App() {
       }).catch((err) => console.log(`При добавлении новых карточек: ${err}`));
   }
 
+  useEffect(() => {
+    function routCheck() {
+      const rout = localStorage.getItem("jwt");
+      if (rout) {
+        apiAuth
+          .routCheck(rout)
+          .then((res) => {
+            if (res && res.data) {
+              setLoggedIn(true);
+              navigate("/");
+              setHeaderEmail(res.data.email);
+            }
+          })
+          .catch((err) => console.log(`При routCheck: ${err}`));
+      } else {
+        setLoggedIn(false);
+      }
+    }
+    routCheck();
+  }, [navigate]);
+
+
   function onRegister(data) {
     apiAuth
       .signup(data)
@@ -144,8 +166,8 @@ export default function App() {
     apiAuth
       .signin(data)
       .then((res) => {
-        if (res && res.rout) {
-          localStorage.setItem("jwt", res.rout);
+        if (res && res.token) {
+          localStorage.setItem("jwt", res.token);
           setHeaderEmail(data.email);
           setLoggedIn(true);
           navigate("/");
@@ -163,29 +185,6 @@ export default function App() {
     localStorage.removeItem("jwt");
     setHeaderEmail("");
   }
-
-  useEffect(() => {
-    function routCheck() {
-      const rout = localStorage.getItem("jwt");
-      if (rout) {
-        apiAuth
-          .routCheck(rout)
-          .then((res) => {
-            if (res && res.user) {
-              setLoggedIn(true);
-              navigate("/");
-              setHeaderEmail(res.user.email);
-            }
-          })
-          .catch((err) => console.log(`При routCheck: ${err}`));
-      } else {
-        setLoggedIn(false);
-      }
-    }
-    routCheck();
-  }, [navigate]);
-
-
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
